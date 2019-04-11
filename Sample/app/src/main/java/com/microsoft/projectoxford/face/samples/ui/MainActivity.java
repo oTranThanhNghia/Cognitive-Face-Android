@@ -79,4 +79,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, IdentificationActivity.class);
         startActivity(intent);
     }
+
+    public void fingerprint(View view){
+        Intent intent = new Intent(this, FingerPrintActivity.class);
+        startActivity(intent);
+    }
 }

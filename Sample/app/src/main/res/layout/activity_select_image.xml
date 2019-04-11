@@ -17,6 +17,7 @@
         android:layout_weight="2">
 
         <Button
+            android:visibility="gone"
             android:id="@+id/button_take_a_photo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

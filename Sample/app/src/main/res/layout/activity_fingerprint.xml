@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/button_add_probe"
+        android:text="add probe image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/image_probe"
+        android:background="@android:color/darker_gray"
+        android:scaleType="centerInside"
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
+
+    <Button
+        android:id="@+id/button_add_candidate"
+        android:text="add candidate image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/image_candidate"
+        android:background="@android:color/darker_gray"
+        android:scaleType="centerInside"
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
+
+    <Button
+        android:id="@+id/button_detect"
+        android:text="Detect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/text_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>
