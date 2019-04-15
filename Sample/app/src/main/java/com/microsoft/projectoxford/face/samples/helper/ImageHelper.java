@@ -33,7 +33,6 @@
 package com.microsoft.projectoxford.face.samples.helper;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -41,9 +40,8 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.media.ExifInterface;
 import android.net.Uri;
-import android.provider.MediaStore;
+import android.support.media.ExifInterface;
 
 import com.microsoft.projectoxford.face.contract.Face;
 import com.microsoft.projectoxford.face.contract.FaceRectangle;
@@ -84,7 +82,7 @@ public class ImageHelper {
 
             // Calculate shrink rate when loading the image into memory.
             int maxSideLength =
-                    options.outWidth > options.outHeight ? options.outWidth: options.outHeight;
+                    options.outWidth > options.outHeight ? options.outWidth : options.outHeight;
             options.inSampleSize = 1;
             options.inSampleSize = calculateSampleSize(maxSideLength, IMAGE_MAX_SIDE_LENGTH);
             options.inJustDecodeBounds = false;
@@ -96,18 +94,28 @@ public class ImageHelper {
             imageInputStream = contentResolver.openInputStream(imageUri);
             Bitmap bitmap = BitmapFactory.decodeStream(imageInputStream, outPadding, options);
             maxSideLength = bitmap.getWidth() > bitmap.getHeight()
-                    ? bitmap.getWidth(): bitmap.getHeight();
+                    ? bitmap.getWidth() : bitmap.getHeight();
             double ratio = IMAGE_MAX_SIDE_LENGTH / (double) maxSideLength;
             if (ratio < 1) {
                 bitmap = Bitmap.createScaledBitmap(
                         bitmap,
-                        (int)(bitmap.getWidth() * ratio),
-                        (int)(bitmap.getHeight() * ratio),
+                        (int) (bitmap.getWidth() * ratio),
+                        (int) (bitmap.getHeight() * ratio),
                         false);
             }
 
-            return rotateBitmap(bitmap, getImageRotationAngle(imageUri, contentResolver));
+            int angle = 0;
+
+            try {
+                angle = getImageRotationAngle(imageUri, contentResolver);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            return rotateBitmap(bitmap, angle);
         } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -241,16 +249,21 @@ public class ImageHelper {
     private static int getImageRotationAngle(
             Uri imageUri, ContentResolver contentResolver) throws IOException {
         int angle = 0;
-        Cursor cursor = contentResolver.query(imageUri,
-                new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
-        if (cursor != null) {
-            if (cursor.getCount() == 1) {
-                cursor.moveToFirst();
-                angle = cursor.getInt(0);
-            }
-            cursor.close();
-        } else {
-            ExifInterface exif = new ExifInterface(imageUri.getPath());
+//        Cursor cursor = contentResolver.query(imageUri,
+//                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
+//        if (cursor != null) {
+//            if (cursor.getCount() > 0 && cursor.getColumnCount() > 0) {
+//                cursor.moveToFirst();
+//                angle = cursor.getInt(0);
+//            }
+//            cursor.close();
+//        } else {
+
+        // https://android-developers.googleblog.com/2016/12/introducing-the-exifinterface-support-library.html
+        InputStream inputStream = null;
+        try {
+            inputStream = contentResolver.openInputStream(imageUri);
+            ExifInterface exif = new ExifInterface(inputStream);
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
@@ -267,7 +280,19 @@ public class ImageHelper {
                 default:
                     break;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception ignored) {
+                    ignored.printStackTrace();
+                }
+            }
         }
+
+        //}
         return angle;
     }
 
@@ -314,10 +339,10 @@ public class ImageHelper {
 
         // Set the result.
         FaceRectangle result = new FaceRectangle();
-        result.left = (int)left;
-        result.top = (int)top;
-        result.width = (int)sideLength;
-        result.height = (int)sideLength;
+        result.left = (int) left;
+        result.top = (int) top;
+        result.width = (int) sideLength;
+        result.height = (int) sideLength;
         return result;
     }
 }

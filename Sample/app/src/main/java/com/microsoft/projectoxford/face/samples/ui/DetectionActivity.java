@@ -52,17 +52,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.microsoft.projectoxford.face.FaceServiceClient;
+import com.microsoft.projectoxford.face.contract.Accessory;
 import com.microsoft.projectoxford.face.contract.Emotion;
 import com.microsoft.projectoxford.face.contract.Face;
 import com.microsoft.projectoxford.face.contract.FacialHair;
-import com.microsoft.projectoxford.face.contract.HeadPose;
-import com.microsoft.projectoxford.face.contract.Accessory;
-import com.microsoft.projectoxford.face.contract.Blur;
-import com.microsoft.projectoxford.face.contract.Exposure;
 import com.microsoft.projectoxford.face.contract.Hair;
+import com.microsoft.projectoxford.face.contract.HeadPose;
 import com.microsoft.projectoxford.face.contract.Makeup;
-import com.microsoft.projectoxford.face.contract.Noise;
-import com.microsoft.projectoxford.face.contract.Occlusion;
 import com.microsoft.projectoxford.face.samples.R;
 import com.microsoft.projectoxford.face.samples.helper.ImageHelper;
 import com.microsoft.projectoxford.face.samples.helper.LogHelper;
@@ -97,7 +93,7 @@ public class DetectionActivity extends AppCompatActivity {
                         true,       /* Whether to return face landmarks */
                         /* Which face attributes to analyze, currently we support:
                            age,gender,headPose,smile,facialHair */
-                        new FaceServiceClient.FaceAttributeType[] {
+                        new FaceServiceClient.FaceAttributeType[]{
                                 FaceServiceClient.FaceAttributeType.Age,
                                 FaceServiceClient.FaceAttributeType.Gender,
                                 FaceServiceClient.FaceAttributeType.Smile,
@@ -403,29 +399,24 @@ public class DetectionActivity extends AppCompatActivity {
                     faces.get(position).faceAttributes.glasses,
                     getHeadPose(faces.get(position).faceAttributes.headPose),
                     getAccessories(faces.get(position).faceAttributes.accessories)
-                    );
+            );
             ((TextView) convertView.findViewById(R.id.text_detected_face)).setText(face_description);
 
             return convertView;
         }
 
         private String getHair(Hair hair) {
-            if (hair.hairColor.length == 0)
-            {
+            if (hair.hairColor.length == 0) {
                 if (hair.invisible)
                     return "Invisible";
                 else
                     return "Bald";
-            }
-            else
-            {
+            } else {
                 int maxConfidenceIndex = 0;
                 double maxConfidence = 0.0;
 
-                for (int i = 0; i < hair.hairColor.length; ++i)
-                {
-                    if (hair.hairColor[i].confidence > maxConfidence)
-                    {
+                for (int i = 0; i < hair.hairColor.length; ++i) {
+                    if (hair.hairColor[i].confidence > maxConfidence) {
                         maxConfidence = hair.hairColor[i].confidence;
                         maxConfidenceIndex = i;
                     }
@@ -436,19 +427,15 @@ public class DetectionActivity extends AppCompatActivity {
         }
 
         private String getMakeup(Makeup makeup) {
-            return  (makeup.eyeMakeup || makeup.lipMakeup) ? "Yes" : "No" ;
+            return (makeup.eyeMakeup || makeup.lipMakeup) ? "Yes" : "No";
         }
 
         private String getAccessories(Accessory[] accessories) {
-            if (accessories.length == 0)
-            {
+            if (accessories.length == 0) {
                 return "NoAccessories";
-            }
-            else
-            {
+            } else {
                 String[] accessoriesList = new String[accessories.length];
-                for (int i = 0; i < accessories.length; ++i)
-                {
+                for (int i = 0; i < accessories.length; ++i) {
                     accessoriesList[i] = accessories[i].type.toString();
                 }
 
@@ -460,55 +447,45 @@ public class DetectionActivity extends AppCompatActivity {
             return (facialHair.moustache + facialHair.beard + facialHair.sideburns > 0) ? "Yes" : "No";
         }
 
-        private String getEmotion(Emotion emotion)
-        {
+        private String getEmotion(Emotion emotion) {
             String emotionType = "";
             double emotionValue = 0.0;
-            if (emotion.anger > emotionValue)
-            {
+            if (emotion.anger > emotionValue) {
                 emotionValue = emotion.anger;
                 emotionType = "Anger";
             }
-            if (emotion.contempt > emotionValue)
-            {
+            if (emotion.contempt > emotionValue) {
                 emotionValue = emotion.contempt;
                 emotionType = "Contempt";
             }
-            if (emotion.disgust > emotionValue)
-            {
+            if (emotion.disgust > emotionValue) {
                 emotionValue = emotion.disgust;
                 emotionType = "Disgust";
             }
-            if (emotion.fear > emotionValue)
-            {
+            if (emotion.fear > emotionValue) {
                 emotionValue = emotion.fear;
                 emotionType = "Fear";
             }
-            if (emotion.happiness > emotionValue)
-            {
+            if (emotion.happiness > emotionValue) {
                 emotionValue = emotion.happiness;
                 emotionType = "Happiness";
             }
-            if (emotion.neutral > emotionValue)
-            {
+            if (emotion.neutral > emotionValue) {
                 emotionValue = emotion.neutral;
                 emotionType = "Neutral";
             }
-            if (emotion.sadness > emotionValue)
-            {
+            if (emotion.sadness > emotionValue) {
                 emotionValue = emotion.sadness;
                 emotionType = "Sadness";
             }
-            if (emotion.surprise > emotionValue)
-            {
+            if (emotion.surprise > emotionValue) {
                 emotionValue = emotion.surprise;
                 emotionType = "Surprise";
             }
             return String.format("%s: %f", emotionType, emotionValue);
         }
 
-        private String getHeadPose(HeadPose headPose)
-        {
+        private String getHeadPose(HeadPose headPose) {
             return String.format("Pitch: %s, Roll: %s, Yaw: %s", headPose.pitch, headPose.roll, headPose.yaw);
         }
     }

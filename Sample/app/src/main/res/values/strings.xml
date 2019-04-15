@@ -106,5 +106,7 @@
     <string name="user_provided_description_data">User data</string>
     <string name="user_provided_person_group_name">Person group name</string>
     <string name="user_provided_person_group_description_data">User data</string>
+    <string name="camera_permission_denied">Camera permission denied</string>
+    <string name="need_camera_permission">i need your Camera permission</string>
 
 </resources>
